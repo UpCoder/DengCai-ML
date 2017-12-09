@@ -1,0 +1,20 @@
+load('TDT2_data', 'fea', 'gnd');
+
+% YOUR CODE HERE
+options = [];
+options.NeighborMode = 'KNN';
+options.k = 20;
+options.WeightMode = 'HeatKernel';
+options.t = 15;
+gnd(gnd==4)=1;
+gnd(gnd==9)=2;
+gnd(gnd==13)=3;
+gnd(gnd==21)=4;
+gnd(gnd==26)=5;
+W = constructW(fea,options);
+row = W(1, :);
+idx = spectral(W, 5);
+newL2 = bestMap(gnd, idx);
+acc = sum(newL2 == idx) / (1.0 * length(newL2));
+fprintf('acc is %f\n', acc);
+mutual_information = mu

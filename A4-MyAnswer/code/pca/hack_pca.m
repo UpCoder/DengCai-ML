@@ -1,0 +1,46 @@
+function img = hack_pca(filename)
+% Input: filename -- input image file name/path
+% Output: img -- image without rotation
+
+img_r = double(imread(filename));
+% imshow(int8(img_r));
+[width, heigh] = size(img_r);
+% YOUR CODE HERE
+[xs, ys] = find(img_r < 150);
+size(xs);
+size(ys);
+% scatter(ys,xs,'filled','r');
+% hold on
+% xs = width - xs;
+xs = xs - width / 2;
+ys = ys - heigh / 2;
+% heigh = ys - heigh/2;
+data = [xs, ys];
+cov_matrix = cov(data);
+[vec, ~] = eigs(cov_matrix, 1, 'lm');
+if(vec(1) < 0 && vec(2) < 0)
+    vec = -vec;
+end
+if(vec(1) > 0 && vec(2) < 0)
+    vec = -vec;
+end
+x_axis = [1 0];
+vec = vec';
+angle = mod(atan2d(det([x_axis; vec]),dot(x_axis,vec)),360);
+angle =  - 1.0  * angle * pi / 180 + pi/2;
+display(angle);
+% angle = 180;
+A=[cos(angle),sin(angle);-sin(angle),cos(angle)];
+rotated = data*A;
+rotated(:, 1) = rotated(:, 1) + width / 2;
+rotated(:, 2) = rotated(:, 2) + heigh / 2;
+% rotated(:, 1) = width - rotated(:, 1);
+% rotated = data;
+processed_img = int8(zeros(size(img_r)));
+for i=1:length(rotated)
+    if(abs(rotated(i,1)) ~= 0 && abs(rotated(i,2)) ~= 0)
+        processed_img(int8(abs(rotated(i,1)) + 1), int8(abs(rotated(i,2))) + 1) = 255;
+    end
+end
+imshow(int8(processed_img));
+end
