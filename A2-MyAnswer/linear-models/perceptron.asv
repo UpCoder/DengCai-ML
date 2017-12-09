@@ -1,0 +1,37 @@
+function [w, iter] = perceptron(X, y)
+%PERCEPTRON Perceptron Learning Algorithm.
+%
+%   INPUT:  X: training sample features, P-by-N matrix.
+%           y: training sample labels, 1-by-N row vector.
+%
+%   OUTPUT: w:    learned perceptron parameters, (P+1)-by-1 column vector.
+%           iter: number of iterations
+%
+
+% YOUR CODE HERE
+size_x = size(X);
+size_y = size(y);
+%% 增广特征向量
+X = [ones(1, size_x(2)); X]; % 这里相当于加了bias，具体的值是通过w学习得到的
+w = ones(size_x(1)+1, 1);
+%% 规划化，让我们只需要和0比对就OK
+X(:, y==-1) = -X(:, y==-1);
+iter = 10;
+learning_rate = 1.0;
+while true
+    flag = true;
+    error_record=[];
+    predicts = w' * X;
+    for i=1:size_x(2)
+        % 对于每一个sample来说，在这里我们采用在线学习的方法
+        if w' * X(:, i) <= 0
+            % 分错了
+            error_record = [X(:, i), error_record];
+            w = w + learning_rate * X(:, i);
+        end
+    end
+    if flag
+        break;
+    end
+end
+end

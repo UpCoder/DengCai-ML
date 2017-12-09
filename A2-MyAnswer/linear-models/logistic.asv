@@ -1,0 +1,40 @@
+function w = logistic(X, y)
+%LR Logistic Regression.
+%
+%   INPUT:  X:   training sample features, P-by-N matrix.
+%           y:   training sample labels, 1-by-N row vector.
+%
+%   OUTPUT: w    : learned parameters, (P+1)-by-1 column vector.
+%
+
+% YOUR CODE HERE
+size_x = size(X);
+size_y = size(y);
+max_circle = 10000;
+w = ones(size_x(1) + 1, 1);
+X = [ones(1, size_x(2)); X];
+prob_arr = h_arr(w, X);
+circle_number = 0;
+learning_rate = 1.0;
+while circle_number < max_circle
+    circle_number = circle_number + 1;
+    w = w + learning_rate * cal_variance()
+end
+end
+function variance = cal_variance(y, predict, X)
+    size_x = size(X);
+    variance = zeros(size_x(1), 1);
+    for i=1:size_x(2)
+        variance = variance + (y(i)-predict(i)) * X(:, i);
+    end
+end
+function prob_arr = h_arr(w, X)
+    prob_arr = [];
+    size_x = size(X);
+    for index=1:size_x(2)
+        prob_arr = [h(w, X(:, index)); prob_arr];
+    end
+end
+function prob = h(w, x)
+    prob = 1.0 / (1 + exp(-w' * x));
+end
